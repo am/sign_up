@@ -94,10 +94,26 @@
         border-radius: 2px;
         -moz-border-radius: 2px;
         -webkit-border-radius: 2px;
-
+        
+        /* simple animation */
         transition: all 0.3s ease;
         -moz-transition: all 0.3s ease;
         -webkit-transition: all 0.3s ease;
+      }
+
+      #signup input.error {
+        border: 1px solid darkred;
+        box-shadow: darkred 0px 0px 3px;
+        -moz-box-shadow: darkred 0px 0px 3px;
+        -webkit-box-shadow: darkred 0px 0px 3px;
+      }
+
+      #signup input:focus {
+        border: 1px solid #d6d800;
+        box-shadow: #d6d800 0px 0px 3px;
+        -moz-box-shadow: #d6d800 0px 0px 3px;
+        -webkit-box-shadow: #d6d800 0px 0px 3px;
+        outline: none;
       }
 
       #signup input[type="submit"] {
@@ -113,7 +129,9 @@
         border-radius: 4px;
         -moz-border-radius: 4px;
         -webkit-border-radius: 4px;
-
+      }
+      #signup .error-message {
+        display: none;
       }
     </style>
   </head>
@@ -125,13 +143,13 @@
           <ul>
             <li>
               <label>name:</label>
-              <input type="text" placeholder="Your name *" name="signup[name]">
-              <p>Enter your name (must have at least 3 characters).</p>
+              <input type="text" placeholder="Your name *" name="signup[name]" class="error">
+              <p class="error-message">Enter your name (must have at least 3 characters).</p>
             </li>
             <li>
               <label>email:</label>
-              <input type="email" placeholder="Email" name="signup[email]">
-              <p>Enter a valid email.</p>
+              <input type="email" placeholder="Email" name="signup[email]" class="error">
+              <p class="error-message">Enter a valid email.</p>
             </li>
           </ul>
         </fieldset>
