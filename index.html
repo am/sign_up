@@ -4,13 +4,58 @@
     <meta charset="utf-8">
     <title>Sign-Up</title>
     <meta name="description" content="HTML, CSS and JavaScript sign-up form in 2 hours.">
+    <style type="text/css">
+      /**
+       * add some custom normalize from:
+       * https://github.com/h5bp/html5-boilerplate/blob/master/css/normalize.css 
+       */
+      section {
+        display: block;
+      }
+      html {
+        background: #fff;
+        color: #000;
+        font-size: 100%;
+        -webkit-text-size-adjust: 100%;
+        -ms-text-size-adjust: 100%;
+      }
+      html, button, input, select, textarea {
+          font-family: sans-serif;
+      }
+      body {
+        margin: 0;
+      }
+      h1 {
+        font-size: 2em;
+        margin: 0.67em 0;
+      }
+      ul {
+        margin: 1em 0;
+        padding: 0 0 0 40px;
+      }
+      form {
+        margin: 0;
+      }
+      fieldset {
+        border: 1px solid #c0c0c0;
+        margin: 0 2px;
+        padding: 0.35em 0.625em 0.75em;
+      }
+      input {
+          font-size: 100%;
+          margin: 0;
+          vertical-align: baseline;
+          *vertical-align: middle;
+          line-height: normal;
+      }
+    </style>
   </head>
   <body>
-    <section>
+    <section class="signup">
       <h1>Sign-Up</h1>
-      <form>
+      <form id="signup">
         <fieldset>
-          <ol>
+          <ul>
             <li>
               <label>name:</label>
               <input type="text" placeholder="Your name *" name="signup[name]">
@@ -21,7 +66,7 @@
               <input type="email" placeholder="Email" name="signup[email]">
               <p>Enter a valid email.</p>
             </li>
-          </ol>
+          </ul>
         </fieldset>
         <input type="submit" value="sign-up">
       </form>
