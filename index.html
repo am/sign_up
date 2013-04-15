@@ -143,12 +143,12 @@
           <ul>
             <li>
               <label>name:</label>
-              <input type="text" placeholder="Your name *" name="signup[name]" class="error">
+              <input type="text" placeholder="Your name *" name="signup[name]">
               <p class="error-message">Enter your name (must have at least 3 characters).</p>
             </li>
             <li>
               <label>email:</label>
-              <input type="email" placeholder="Email" name="signup[email]" class="error">
+              <input type="email" placeholder="Email" name="signup[email]">
               <p class="error-message">Enter a valid email.</p>
             </li>
           </ul>
@@ -156,5 +156,41 @@
         <input type="submit" value="sign-up">
       </form>
     </section>
+    <!-- js validation -->
+    <script type="text/javascript">
+
+    (function(signUp, undefined) {
+      // private vars
+      var FormValidator, signup_el, config;
+
+      FormValidator = (function(){
+        function FormValidator(form, config) {
+          this.form = form;
+          this.config = config;
+
+          console.log(this);
+        };
+
+        return FormValidator;
+      })();
+
+      config = [{
+        name: "signup[name]",
+        requiered: true,
+        pattern: /0-9a-zA-Z]{3,40}/
+      },{
+        name: "signup[email]",
+        requiered: false,
+        pattern: /0-9a-zA-Z]{3,40}/
+      }];
+
+      signup_el = document.getElementById('signup');
+
+      formValidator = new FormValidator(signup_el, config);
+
+
+    }(window.signUp = window.signUp || {}));
+
+    </script>
   </body>
  </html>
