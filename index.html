@@ -108,7 +108,7 @@
         -webkit-box-shadow: darkred 0px 0px 3px;
       }
 
-      #signup input:focus {
+      #signup input:focus, #signup input.valid {
         border: 1px solid #d6d800;
         box-shadow: #d6d800 0px 0px 3px;
         -moz-box-shadow: #d6d800 0px 0px 3px;
@@ -163,17 +163,90 @@
       // private vars
       var FormValidator, signup_el, config;
 
+      // the validator class
       FormValidator = (function(){
+        var initFocusHandlers, input_els;
+
         function FormValidator(form, config) {
           this.form = form;
           this.config = config;
 
-          console.log(this);
+          initFocusHandlers();
+        }
+
+        initFocusHandlers = function(){
+          
+          for (var i = 0; i < config.length; i++) {
+            console.log(config[i]['name']);
+
+            var c, el;
+            c = config[i];
+
+            if(c['name']) {
+              el = document.getElementsByName(c['name']);
+
+              addListener(el[0], "focusout", function(e) {
+                validate(e.target);
+              });
+            }
+          };
+        };
+
+        validate = function(el) {
+          var i, el_name, el_config, el_text, invalid, invalid_req;
+
+          el_text = el.value.toString();
+          console.log(el_text);
+
+          el_name = el.getAttribute("name");
+          // find it's own configuration
+          for (i = 0; i < config.length; i++) {
+            if(config[i]['name'] === el_name){
+              el_config = config[i];
+            }
+          };
+
+          // check for requested validations
+          if(el_config['requiered']) {
+            // requered field
+            if(el_config['requiered'] === true) {
+              invalid_req = (el.value === "");
+            }
+            console.log('check if has content, invalid?', invalid_req);
+          }
+
+          if(el_config['pattern']) {
+            console.log('validate using this regexp');
+          }
+
+          // apply errors
+          invalid = invalid_req;
+          if(invalid){
+            el.className = "error";
+          } else {
+            el.className = "valid";
+          }
+          
         };
 
         return FormValidator;
       })();
 
+      // cross-browser event listeners
+      var addListener = (function(){
+        if(window.addEventListener){
+          return (function(target, eventType, handler){
+            target.addEventListener(eventType, handler, true);
+          });
+        }
+        else{
+          return (function(target, eventType, handler){
+            target.attachEvent('on'+eventType, handler);
+          });
+        }
+      })();
+
+      // validation configurarion
       config = [{
         name: "signup[name]",
         requiered: true,
@@ -184,8 +257,10 @@
         pattern: /0-9a-zA-Z]{3,40}/
       }];
 
+      // find the form element
       signup_el = document.getElementById('signup');
 
+      // create a new instance of FormValidator
       formValidator = new FormValidator(signup_el, config);
 
 
