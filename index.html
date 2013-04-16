@@ -148,7 +148,7 @@
             </li>
             <li>
               <label>email:</label>
-              <input type="email" placeholder="Email" name="signup[email]">
+              <input type="text" placeholder="Email" name="signup[email]">
               <p class="error-message">Enter a valid email.</p>
             </li>
           </ul>
@@ -161,12 +161,14 @@
 
     (function(signUp, undefined) {
       // private vars
-      var FormValidator, signup_el, config;
+      var FormValidator, addListener, signup_el, config;
 
       // the validator class
       FormValidator = (function(){
+        // private vars
         var initFocusHandlers, input_els;
 
+        // constructor
         function FormValidator(form, config) {
           this.form = form;
           this.config = config;
@@ -174,17 +176,26 @@
           initFocusHandlers();
         }
 
-        initFocusHandlers = function(){
-          
-          for (var i = 0; i < config.length; i++) {
-            console.log(config[i]['name']);
+        // public methods
+        FormValidator.prototype.isValid = function(){
+          // check for any validation errors
+          for (i = 0; i < config.length; i++) {
+            if(config[i]['invalid'] === true) return "false";
+          };
+          // no error 
+          return true;
+        };
 
+        // private methods
+        initFocusHandlers = function(){
+          for (var i = 0; i < config.length; i++) {
             var c, el;
             c = config[i];
-
+            // check if a name is provided
             if(c['name']) {
               el = document.getElementsByName(c['name']);
-
+              // add focus listener
+              //@todo resolve cross-browser issue
               addListener(el[0], "focusout", function(e) {
                 validate(e.target);
               });
@@ -196,7 +207,6 @@
           var i, el_name, el_config, el_text, invalid, invalid_req, invalid_pat;
 
           el_text = el.value.toString();
-          console.log(el_text);
 
           el_name = el.getAttribute("name");
           // find it's own configuration
@@ -215,35 +225,33 @@
           }
 
           if(el_config['pattern']) {
-            console.log('validate using this regexp');
             // match regexp
-            invalid_pat = el_config['pattern'].test(el_text);
-            console.log(el_config['pattern'], '-> ', invalid_pat);
+            invalid_pat = !el_config['pattern'].test(el_text);
           }
 
           // apply errors
-          invalid = invalid_req || !invalid_pat;
+          invalid = invalid_req || invalid_pat;
           el_config['invalid'] = invalid;
 
-          if(invalid) {
-            el.className = "error";
-          } else {
-            el.className = "valid";
-          }
+          if(invalid) el.className = "error";
+          else el.className = "valid";
         };
 
         return FormValidator;
       })();
 
-      // cross-browser event listeners
-      var addListener = (function(){
-        if(window.addEventListener){
-          return (function(target, eventType, handler){
-            target.addEventListener(eventType, handler, true);
+      // addListener, cross-browser event listeners
+      //@param target
+      //@param eventType
+      //@param handler
+      addListener = (function() {
+        if(window.addEventListener) {
+          return (function(target, eventType, handler) {
+            target.addEventListener(eventType, handler, false);
           });
         }
-        else{
-          return (function(target, eventType, handler){
+        else {
+          return (function(target, eventType, handler) {
             target.attachEvent('on'+eventType, handler);
           });
         }
@@ -254,12 +262,12 @@
         name: "signup[name]",
         required: true,
         pattern: /^[a-zA-Z ]{3,40}/,
-        invalid: null
+        invalid: true
       },{
         name: "signup[email]",
-        required: false,
+        required: true,
         pattern: /.+\@.+\..+/,
-        invalid: null
+        invalid: true
       }];
 
       // find the form element
@@ -268,6 +276,14 @@
       // create a new instance of FormValidator
       formValidator = new FormValidator(signup_el, config);
 
+      // submit form
+      addListener(signup_el, 'submit', function(e){
+        e.preventDefault();
+
+        if(formValidator.isValid() === true) {
+          e.target.submit();
+        }
+      })
 
     }(window.signUp = window.signUp || {}));
 
