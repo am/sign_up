@@ -138,7 +138,7 @@
   <body>
     <section class="signup">
       <h1>Sign-Up</h1>
-      <form id="signup">
+      <form id="signup" action="http://xing.com/signup" method="post">
         <fieldset>
           <ul>
             <li>
@@ -193,7 +193,7 @@
         };
 
         validate = function(el) {
-          var i, el_name, el_config, el_text, invalid, invalid_req;
+          var i, el_name, el_config, el_text, invalid, invalid_req, invalid_pat;
 
           el_text = el.value.toString();
           console.log(el_text);
@@ -207,26 +207,29 @@
           };
 
           // check for requested validations
-          if(el_config['requiered']) {
-            // requered field
-            if(el_config['requiered'] === true) {
-              invalid_req = (el.value === "");
+          if(el_config['required']) {
+            // required field
+            if(el_config['required'] === true) {
+              invalid_req = (el_text === "");
             }
-            console.log('check if has content, invalid?', invalid_req);
           }
 
           if(el_config['pattern']) {
             console.log('validate using this regexp');
+            // match regexp
+            invalid_pat = el_config['pattern'].test(el_text);
+            console.log(el_config['pattern'], '-> ', invalid_pat);
           }
 
           // apply errors
-          invalid = invalid_req;
-          if(invalid){
+          invalid = invalid_req || !invalid_pat;
+          el_config['invalid'] = invalid;
+
+          if(invalid) {
             el.className = "error";
           } else {
             el.className = "valid";
           }
-          
         };
 
         return FormValidator;
@@ -249,12 +252,14 @@
       // validation configurarion
       config = [{
         name: "signup[name]",
-        requiered: true,
-        pattern: /0-9a-zA-Z]{3,40}/
+        required: true,
+        pattern: /^[a-zA-Z ]{3,40}/,
+        invalid: null
       },{
         name: "signup[email]",
-        requiered: false,
-        pattern: /0-9a-zA-Z]{3,40}/
+        required: false,
+        pattern: /.+\@.+\..+/,
+        invalid: null
       }];
 
       // find the form element
